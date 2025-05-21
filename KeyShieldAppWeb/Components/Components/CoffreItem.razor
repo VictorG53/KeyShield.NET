@@ -1,0 +1,10 @@
+@inject IDownstreamApi DownstreamApi;
+
+
+<div class="coffre-item">
+    <div class="coffre-name">@Name</div>
+    <div class="coffre-actions">
+        <button class="btn btn-primary" @onclick="NavigateToCoffre">Ouvrir</button>
+        <button class="btn btn-danger" @onclick="DeleteCoffre">Delete</button>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+@page "/ajouter-coffre"
+@attribute [Authorize]
+@inject IDownstreamApi DownstreamApi;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JS
+
+<PageTitle>
+    Ajouter un coffre
+</PageTitle>
+
+<div class="container mt-4">
+    <h1>Ajouter un nouveau coffre</h1>
+</div>
+
+<div class="container mt-4">
+    <form id="coffre-form" @onsubmit:preventDefault>
+        <div class="mb-3">
+            <label for="coffreName" class="form-label">Nom du Coffre</label>
+            <input type="text" class="form-control" id="coffreName" required @bind="CoffreNom">
+        </div>
+        <div class="mb-3">
+            <label for="coffrePassword" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" id="coffrePassword" required>
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="SubmitForm">Ajouter</button>
+    </form>
+</div>

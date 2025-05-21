@@ -1,0 +1,42 @@
+@page "/coffre/{identifiant}"
+@attribute [Authorize]
+@inject IDownstreamApi DownstreamApi;
+@inject IJSRuntime JS
+
+<PageTitle>Coffre</PageTitle>
+
+<div>
+    <div>Identifiant de mon coffre : @Identifiant</div>
+
+    @if (PasswordChecked && PasswordOk)
+    {
+        <div class="mt-3">
+            <a href="@($"/coffre/{Identifiant}/add")" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Créer une donnée
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="form-group mt-4">
+            <label for="coffrePassword">Mot de passe du coffre</label>
+            <input type="password" class="form-control" id="coffrePassword"/>
+        </div>
+
+        @if (PasswordChecked && !PasswordOk)
+        {
+            <div class="mt-3">
+                <div class="alert alert-danger">
+                    Mot de passe incorrect. Veuillez recommencer.
+                </div>
+            </div>
+        }
+
+        <div class="mt-3">
+            <button class="btn btn-primary" @onclick="SubmitForm">
+                Déverrouiller le coffre
+            </button>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,20 @@
+﻿@page "/"
+@using KeyShieldAppWeb.Components.Components
+@attribute [Authorize]
+@inject IDownstreamApi DownstreamApi;
+
+<PageTitle>Home</PageTitle>
+
+@if (_coffres.Count > 0)
+{
+    <div class="coffres-container">
+        @foreach (var coffre in _coffres)
+        {
+            <CoffreItem Id="@coffre.Identifiant.ToString()" Name="@coffre.Nom" OnCoffreDeleted="@OnCoffreDeletedAsync"/>
+        }
+    </div>
+}
+else
+{
+    <p>Aucun coffre</p>
+}

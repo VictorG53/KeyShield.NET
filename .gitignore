@@ -1,0 +1,8 @@
+TestDB/
+
+.idea/
+
+.DS_Store
+
+**/bin/
+**/obj/

@@ -1,0 +1,6 @@
+@KeyShieldAPI_HostAddress = http://localhost:5288
+
+GET {{KeyShieldAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
