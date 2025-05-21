@@ -1,9 +1,10 @@
-using KeyShieldDB.Context;
-using KeyShieldAPI.Services;
-using Microsoft.Identity.Web;
 using KeyShieldAPI.Middlewares;
 using KeyShieldAPI.Repositories;
+using KeyShieldAPI.Services;
+using KeyShieldAPI.Services.CoffreDeblocageService;
+using KeyShieldDB.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<KeyShieldDbContext>();
 
+builder.Services.AddSingleton<ICoffreDeblocageMemoryStore, CoffreDeblocageMemoryStore>();
+
 builder.Services.AddScoped<GetOrCreateUtilisateurMiddleware>();
 builder.Services.AddScoped<ErrorHandlerMiddleware>();
 
@@ -30,7 +33,8 @@ builder.Services.AddScoped<UtilisateurRepository>();
 builder.Services.AddScoped<CoffreService>(sp =>
     new CoffreService(
         sp.GetRequiredService<CoffreRepository>(),
-        sp.GetRequiredService<UtilisateurService>()
+        sp.GetRequiredService<UtilisateurService>(),
+        sp.GetRequiredService<ICoffreDeblocageMemoryStore>()
     )
 );
 builder.Services.AddScoped<CoffreRepository>();
@@ -43,16 +47,14 @@ var app = builder.Build();
 app.UseHttpLogging();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
 
 app.UseMiddleware<GetOrCreateUtilisateurMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();

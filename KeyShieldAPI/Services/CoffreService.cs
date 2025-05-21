@@ -1,11 +1,15 @@
 using KeyShieldAPI.Repositories;
+using KeyShieldAPI.Services.CoffreDeblocageService;
 using KeyShieldDB.Models;
 using KeyShieldDTO.RequestObjects;
 using KeyShieldDTO.ResponseObjects;
 
 namespace KeyShieldAPI.Services;
 
-public class CoffreService(CoffreRepository coffreRepository, UtilisateurService utilisateurService)
+public class CoffreService(
+    CoffreRepository coffreRepository,
+    UtilisateurService utilisateurService,
+    ICoffreDeblocageMemoryStore coffreDeblocageMemoryStore)
 {
     public async Task<List<CoffreDTOResponse>> GetAllUtilisateurCoffresAsync()
     {
@@ -73,8 +77,14 @@ public class CoffreService(CoffreRepository coffreRepository, UtilisateurService
         if (coffre.UtilisateurIdentifiant != utilisateurService.CurrentAppUserId)
             throw new UnauthorizedAccessException("User does not have access to this coffre");
 
+        var hashComparison = coffre.MotDePasseHash.SequenceEqual(passwordHash);
+        if (hashComparison)
+        {
+            coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, coffreIdentifiant);
+            return coffre.Sel;
+        }
 
-        return coffre.MotDePasseHash.SequenceEqual(passwordHash) ? coffre.Sel : null;
+        return null;
     }
 
     public async Task<bool> DeleteCoffreAsync(string coffreId)

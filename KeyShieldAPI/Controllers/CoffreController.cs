@@ -9,7 +9,8 @@ namespace KeyShieldAPI.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/coffre")]
-public class CoffreController(CoffreService coffreService) : ControllerBase
+public class CoffreController(CoffreService coffreService)
+    : ControllerBase
 {
     public async Task<List<CoffreDTOResponse>> GetAllCoffresAsync()
     {
@@ -39,6 +40,7 @@ public class CoffreController(CoffreService coffreService) : ControllerBase
         try
         {
             var result = await coffreService.CheckPasswordAsync(coffreId, request.PasswordHash);
+
             return Ok(result);
         }
         catch (ArgumentException ex)

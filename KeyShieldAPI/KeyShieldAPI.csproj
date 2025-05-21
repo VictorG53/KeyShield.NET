@@ -1,23 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-KeyShieldAPI-30a97c23-d504-4dbc-a2f6-59d5a4fbe968</UserSecretsId>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-KeyShieldAPI-30a97c23-d504-4dbc-a2f6-59d5a4fbe968</UserSecretsId>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.2" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.7.1" />
-    <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" NoWarn="NU1605"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.2" NoWarn="NU1605"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.Identity.Web" Version="3.7.1"/>
+        <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../KeyShieldDB/KeyShieldDB.csproj" />
-    <ProjectReference Include="../KeyShieldDTO/KeyShieldDTO.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../KeyShieldDB/KeyShieldDB.csproj"/>
+        <ProjectReference Include="../KeyShieldDTO/KeyShieldDTO.csproj"/>
+    </ItemGroup>
 
 </Project>
