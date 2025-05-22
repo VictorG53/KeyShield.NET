@@ -58,11 +58,11 @@ public class CoffreService(
 
     public async Task<byte[]?> CheckPasswordAsync(string coffreId, byte[] passwordHash)
     {
-        var coffreIdentifiant = Guid.TryParse(coffreId, out var result)
+        Guid coffreIdentifiant = Guid.TryParse(coffreId, out var result)
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 
-        var coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
+        Coffre coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
 
         if (coffre.UtilisateurIdentifiant != utilisateurService.CurrentAppUserId)
             throw new UnauthorizedAccessException("User does not have access to this coffre");
@@ -76,11 +76,11 @@ public class CoffreService(
 
     public async Task<bool> DeleteCoffreAsync(string coffreId)
     {
-        var coffreIdentifiant = Guid.TryParse(coffreId, out var result)
+        Guid coffreIdentifiant = Guid.TryParse(coffreId, out var result)
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 
-        var coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
+        Coffre coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
 
         if (coffre.UtilisateurIdentifiant != utilisateurService.CurrentAppUserId)
             throw new UnauthorizedAccessException("User does not have permission to delete this coffre");

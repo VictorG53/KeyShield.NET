@@ -3,24 +3,20 @@ namespace KeyShieldDTO.ResponseObjects;
 public class EntreeDTOResponse(
     Guid identifiant,
     Guid coffreIdentifiant,
-    Guid? nomIdentifiant,
-    Guid? nomUtilisateurIdentifiant,
-    Guid? motDePasseIdentifiant,
-    Guid? commentaireIdentifiant,
-    Guid? dateCreationIdentifiant,
-    Guid? dateModificationIdentifiant
-)
+    DonneeDTOResponse nom,
+    DonneeDTOResponse nomUtilisateur,
+    DonneeDTOResponse motDePasse,
+    DonneeDTOResponse commentaire,
+    DonneeDTOResponse dateCreation,
+    DonneeDTOResponse dateModification
+    )
 {
-    #region Properties
-
     public Guid Identifiant { get; set; } = identifiant;
     public Guid CoffreIdentifiant { get; set; } = coffreIdentifiant;
-    public Guid? NomIdentifiant { get; set; } = nomIdentifiant;
-    public Guid? NomUtilisateurIdentifiant { get; set; } = nomUtilisateurIdentifiant;
-    public Guid? MotDePasseIdentifiant { get; set; } = motDePasseIdentifiant;
-    public Guid? CommentaireIdentifiant { get; set; } = commentaireIdentifiant;
-    public Guid? DateCreationIdentifiant { get; set; } = dateCreationIdentifiant;
-    public Guid? DateModificationIdentifiant { get; set; } = dateModificationIdentifiant;
-
-    #endregion
+    public DonneeDTOResponse Nom { get; set; } = nom;
+    public DonneeDTOResponse NomUtilisateur { get; set; } = nomUtilisateur;
+    public DonneeDTOResponse MotDePasse { get; set; } = motDePasse;
+    public DonneeDTOResponse Commentaire { get; set; } = commentaire;
+    public DonneeDTOResponse DateCreation { get; set; } = dateCreation;
+    public DonneeDTOResponse DateModification { get; set; } = dateModification;
 }

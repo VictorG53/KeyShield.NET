@@ -13,7 +13,7 @@ public partial class CoffreItem : ComponentBase
 
     private void NavigateToCoffre()
     {
-        NavigationManager.NavigateTo($"/Coffre/{Id}");
+        NavigationManager.NavigateTo($"/coffre/{Id}/access");
     }
 
     private async Task DeleteCoffre()

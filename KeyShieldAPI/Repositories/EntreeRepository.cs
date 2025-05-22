@@ -1,7 +1,8 @@
-using System.Diagnostics;
 using KeyShieldDB.Context;
 using KeyShieldDB.Models;
 using KeyShieldDTO.RequestObjects;
+using KeyShieldDTO.ResponseObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace KeyShieldAPI.Repositories;
 
@@ -10,7 +11,6 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
 
     public async Task CreateEntreeAsync(EntreeCreationDTORequest request)
     {
-        var stopwatch = Stopwatch.StartNew();
 
         using var transaction = await dbContext.Database.BeginTransactionAsync();
 
@@ -70,10 +70,6 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
                 donneeDateModification
             );
 
-            stopwatch.Stop();
-            Console.WriteLine($"Temps création et ajout Donnees: {stopwatch.ElapsedMilliseconds} ms");
-            stopwatch.Restart();
-
             Entree entree = new Entree
             {
                 Identifiant = Guid.NewGuid(),
@@ -87,15 +83,7 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
             };
             dbContext.Entrees.Add(entree);
 
-            stopwatch.Stop();
-            Console.WriteLine($"Temps création et ajout Entree: {stopwatch.ElapsedMilliseconds} ms");
-            stopwatch.Restart();
-
             await dbContext.SaveChangesAsync();
-
-            stopwatch.Stop();
-            Console.WriteLine($"Temps SaveChangesAsync: {stopwatch.ElapsedMilliseconds} ms");
-            stopwatch.Restart();
 
             await transaction.CommitAsync();
         }
@@ -104,5 +92,24 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
             await transaction.RollbackAsync();
             throw;
         }
+    }
+
+    public async Task<List<EntreeDTOResponse>> GetAllCoffreEntreesAsync(Guid coffreIdentifiant)
+    {
+        var entreeList = await dbContext.Entrees
+            .Where(e => e.CoffreIdentifiant == coffreIdentifiant)
+            .Select(e => new EntreeDTOResponse(
+                e.Identifiant,
+                e.CoffreIdentifiant,
+                new DonneeDTOResponse(e.Nom.Identifiant, e.Nom.Cypher, e.Nom.IV, e.Nom.Tag),
+                new DonneeDTOResponse(e.NomUtilisateur.Identifiant, e.NomUtilisateur.Cypher, e.NomUtilisateur.IV, e.NomUtilisateur.Tag),
+                new DonneeDTOResponse(e.MotDePasse.Identifiant, e.MotDePasse.Cypher, e.MotDePasse.IV, e.MotDePasse.Tag),
+                new DonneeDTOResponse(e.Commentaire.Identifiant, e.Commentaire.Cypher, e.Commentaire.IV, e.Commentaire.Tag),
+                new DonneeDTOResponse(e.DateCreation.Identifiant, e.DateCreation.Cypher, e.DateCreation.IV, e.DateCreation.Tag),
+                new DonneeDTOResponse(e.DateModification.Identifiant, e.DateModification.Cypher, e.DateModification.IV, e.DateModification.Tag)
+            ))
+            .ToListAsync();
+
+        return entreeList;
     }
 }

@@ -117,8 +117,28 @@ window.encrypt = async function (inputId) {
     };
 }
 
-/*
-window.decrypt = async function (cipherData, iv, tag) {
+window.addDataToTable = function (data) {
+    const { nom, nomUtilisateur, motDePasse, commentaire } = data;
+    const table = document.getElementById('coffreData');
+    if (!table) {
+        alert('Table not found.');
+        return;
+    }
+
+    const row = table.insertRow();
+    const cellNom = row.insertCell(0);
+    const cellNomUtilisateur = row.insertCell(1);
+    const cellMotDePasse = row.insertCell(2);
+    const cellCommentaire = row.insertCell(3);
+    cellNom.textContent = nom;
+    cellNomUtilisateur.textContent = nomUtilisateur;
+    cellMotDePasse.textContent = motDePasse;
+    cellCommentaire.textContent = commentaire;
+
+
+}
+
+window.decrypt = async function (cipherText, iv, tag) {
     const cipherTextArray = new Uint8Array(Object.values(cipherText));
     const ivArray = new Uint8Array(Object.values(iv));
     const authTagArray = new Uint8Array(Object.values(tag));
@@ -138,4 +158,21 @@ window.decrypt = async function (cipherData, iv, tag) {
 
     return decoder.decode(decryptedData);
 }
-*/
+
+window.decryptAndDisplay = async function (dataArray) {
+    for (const data of dataArray) {
+        const decryptedNom = await decrypt(data.nom.cypher, data.nom.iv, data.nom.tag);
+        const decryptedNomUtilisateur = await decrypt(data.nomUtilisateur.cypher, data.nomUtilisateur.iv, data.nomUtilisateur.tag);
+        const decryptedMotDePasse = await decrypt(data.motDePasse.cypher, data.motDePasse.iv, data.motDePasse.tag);
+        const decryptedCommentaire = await decrypt(data.commentaire.cypher, data.commentaire.iv, data.commentaire.tag);
+
+        const entree = {
+            nom: decryptedNom,
+            nomUtilisateur: decryptedNomUtilisateur,
+            motDePasse: decryptedMotDePasse,
+            commentaire: decryptedCommentaire
+        }
+
+        window.addDataToTable(entree);
+    }
+}
