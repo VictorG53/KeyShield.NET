@@ -29,6 +29,15 @@ builder.Services.AddScoped<ErrorHandlerMiddleware>();
 // Utilisateur
 builder.Services.AddScoped<UtilisateurService>();
 builder.Services.AddScoped<UtilisateurRepository>();
+
+// Log
+builder.Services.AddScoped<LogService>(sp => 
+    new LogService(sp.GetRequiredService<LogRepository>(),
+        sp.GetRequiredService<UtilisateurService>())
+);
+
+builder.Services.AddScoped<LogRepository>();
+
 // Coffre
 builder.Services.AddScoped<CoffreService>(sp =>
     new CoffreService(

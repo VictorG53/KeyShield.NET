@@ -1,7 +1,17 @@
 @page "/logs"
+@inject IDownstreamApi DownstreamApi;
 
 <PageTitle>
     Logs de l'application
 </PageTitle>
 
-<h1>Je suis ici</h1>
+@if (_logs.Count > 0)
+{
+    <div class="logs-container">
+        @foreach (var log in _logs)
+        {
+            <h2>@log.Identifiant</h2>
+            <span>@log.Message</span>
+        }
+    </div>
+}
