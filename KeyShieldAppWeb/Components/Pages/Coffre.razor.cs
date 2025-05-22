@@ -10,13 +10,8 @@ public partial class Coffre : ComponentBase
 
     public byte[]? Sel { get; set; }
 
-    public bool PasswordOk { get; set; }
-    public bool PasswordChecked { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender) await JS.InvokeVoidAsync("initFormSubmission", DotNetObjectReference.Create(this));
-    }
+    private bool PasswordOk { get; set; }
+    private bool PasswordChecked { get; set; }
 
     private async Task SubmitForm()
     {
@@ -30,7 +25,7 @@ public partial class Coffre : ComponentBase
                 return;
             }
 
-            var response = await DownstreamApi.PostForUserAsync<PasswordCheckRequest, byte[]>(
+            var salt = await DownstreamApi.PostForUserAsync<PasswordCheckRequest, byte[]>(
                 "KeyShieldAPI",
                 new PasswordCheckRequest(
                     hashedPassword
@@ -38,9 +33,12 @@ public partial class Coffre : ComponentBase
                 options => { options.RelativePath = $"api/coffre/{Identifiant}/checkPassword"; }
             );
 
-            if (response is not null) PasswordOk = true;
-
-            Sel = response ?? null;
+            if (salt is not null)
+            {
+                await JS.InvokeVoidAsync("deriveKey", salt);
+                Sel = salt;
+                PasswordOk = true;
+            }
 
             PasswordChecked = true;
             StateHasChanged();

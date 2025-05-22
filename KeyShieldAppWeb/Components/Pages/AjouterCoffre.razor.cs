@@ -9,11 +9,6 @@ public partial class AjouterCoffre : ComponentBase
 {
     private string CoffreNom { get; set; } = string.Empty;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender) await JS.InvokeVoidAsync("initFormSubmission", DotNetObjectReference.Create(this));
-    }
-
     private async Task SubmitForm()
     {
         try
@@ -21,7 +16,6 @@ public partial class AjouterCoffre : ComponentBase
             var hashedPassword = await JS.InvokeAsync<byte[]>("getAndHashPassword");
             var salt = await JS.InvokeAsync<byte[]>("generateSalt");
 
-            // Validate input data
             if (salt.Length == 0)
             {
                 Console.WriteLine("Salt data is empty or null");

@@ -22,26 +22,6 @@ public class CoffreService(
         }).ToList();
     }
 
-    public async Task<byte[]> GetCoffreSaltAsync(string coffreId)
-    {
-        var coffreIdentifiant = Guid.TryParse(coffreId, out var result)
-            ? result
-            : throw new ArgumentException("Invalid Coffre ID format");
-
-        var coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
-
-        return coffre.Sel;
-    }
-
-    public async Task<bool> GetAccess(string identifiant)
-    {
-        var coffreIdentifiant = Guid.TryParse(identifiant, out var result)
-            ? result
-            : throw new ArgumentException("Invalid Guid");
-        var coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
-        return true;
-    }
-
     public async Task<CoffreDTOResponse> CreateCoffreAsync(CoffreDTORequest request)
     {
         Coffre coffre = new()
@@ -78,13 +58,10 @@ public class CoffreService(
             throw new UnauthorizedAccessException("User does not have access to this coffre");
 
         var hashComparison = coffre.MotDePasseHash.SequenceEqual(passwordHash);
-        if (hashComparison)
-        {
-            coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, coffreIdentifiant);
-            return coffre.Sel;
-        }
+        if (!hashComparison) return null;
 
-        return null;
+        coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, coffreIdentifiant);
+        return coffre.Sel;
     }
 
     public async Task<bool> DeleteCoffreAsync(string coffreId)
@@ -93,14 +70,11 @@ public class CoffreService(
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 
-        // First get the coffre to verify ownership
         var coffre = await coffreRepository.GetCoffreByIdAsync(coffreIdentifiant);
 
-        // Verify the current user is the owner of the coffre
         if (coffre.UtilisateurIdentifiant != utilisateurService.CurrentAppUserId)
             throw new UnauthorizedAccessException("User does not have permission to delete this coffre");
 
-        // If ownership verification passed, proceed with deletion
         return await coffreRepository.DeleteCoffreAsync(coffreIdentifiant);
     }
 }

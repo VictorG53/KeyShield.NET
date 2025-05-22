@@ -18,14 +18,6 @@ public class CoffreController(CoffreService coffreService)
         return coffres;
     }
 
-
-    [HttpGet("/{coffreId}")]
-    public async Task<bool> GetAccess(string coffreId)
-    {
-        var canAccess = await coffreService.GetAccess(coffreId);
-        return true;
-    }
-
     [HttpPost]
     public async Task<ActionResult<CoffreDTOResponse>> CreateCoffre([FromBody] CoffreDTORequest request)
     {
