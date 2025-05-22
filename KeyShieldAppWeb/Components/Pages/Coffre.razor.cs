@@ -1,4 +1,5 @@
 using KeyShieldDTO.RequestObjects;
+using KeyShieldDTO.ResponseObjects;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -12,6 +13,31 @@ public partial class Coffre : ComponentBase
 
     private bool PasswordOk { get; set; }
     private bool PasswordChecked { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var accessResult = await DownstreamApi.GetForUserAsync<BooleanResponse>(
+                "KeyShieldAPI",
+                options => { options.RelativePath = $"api/coffre/{Identifiant}/access"; }
+            );
+
+            if (accessResult is not null && accessResult.Value)
+            {
+                PasswordOk = true;
+                PasswordChecked = true;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            PasswordOk = false;
+            PasswordChecked = true;
+            StateHasChanged();
+            return;
+        }
+    }
 
     private async Task SubmitForm()
     {

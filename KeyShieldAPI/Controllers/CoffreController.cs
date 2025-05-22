@@ -25,6 +25,33 @@ public class CoffreController(CoffreService coffreService)
         return Ok(coffre);
     }
 
+    [HttpGet("{coffreId}/access")]
+    public ActionResult<BooleanResponse> IsCoffreUnlocked(string coffreId)
+    {
+        try
+        {
+            bool result = coffreService.IsCoffreUnlocked(coffreId);
+            return Ok(new BooleanResponse(result));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            return StatusCode(500, $"An error occurred while processing your request : {ex.Message}");
+        }
+    }
+
     [HttpPost("{coffreId}/checkPassword")]
     public async Task<ActionResult<byte[]?>> CheckPassword(string coffreId,
         [FromBody] PasswordCheckRequest request)

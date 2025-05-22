@@ -10,7 +10,26 @@ public partial class AjouterEntree
 {
     [Parameter] public required string Identifiant { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var accessResult = await DownstreamApi.GetForUserAsync<BooleanResponse>(
+                "KeyShieldAPI",
+                options => { options.RelativePath = $"api/coffre/{Identifiant}/access"; }
+            );
 
+            if (accessResult is not null && !accessResult.Value)
+            {
+                Navigation.NavigateTo("/");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex}");
+            Navigation.NavigateTo("/");
+        }
+    }
 
     private async Task SaveData()
     {

@@ -34,9 +34,6 @@ public class CoffreService(
             DateCreation = DateTime.Now
         };
 
-        Console.WriteLine(
-            $"Coffre : \n Nom : {coffre.Nom} \n Identifiant : {coffre.Identifiant} \n UtilisateurIdentifiant : {coffre.UtilisateurIdentifiant} \n DateCreation : {coffre.DateCreation}");
-
         await coffreRepository.CreateCoffreAsync(coffre);
 
         return new CoffreDTOResponse
