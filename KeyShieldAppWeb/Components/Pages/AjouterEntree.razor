@@ -20,23 +20,25 @@
                     <form @onsubmit="SaveData">
                         <div class="mb-3">
                             <label for="dataNom" class="form-label">Nom de l'entrée</label>
-                            <input type="text" class="form-control" id="dataNom" required/>
+                            <input type="text" class="form-control" id="dataNom" required />
                         </div>
 
                         <div class="mb-3">
                             <label for="dataNomUtilisateur" class="form-label">Nom d'utilisateur</label>
-                            <input type="text" class="form-control" id="dataNomUtilisateur" required/>
+                            <input type="text" class="form-control" id="dataNomUtilisateur" required />
                         </div>
 
                         <div class="mb-3">
                             <label for="dataMotDePasse" class="form-label">Mot de passe</label>
-                            <input type="password" class="form-control" id="dataMotDePasse" rows="3"
-                                   required/>
+                            <input type="password" class="form-control" id="dataMotDePasse" rows="3" required />
                         </div>
 
                         <div class="mb-3">
                             <label for="dataCommentaire" class="form-label">Commentaire</label>
                             <textarea class="form-control" id="dataCommentaire" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <input type="hidden" id="dataDateCreation" />
                         </div>
 
                         <div class="d-flex justify-content-between">

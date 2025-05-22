@@ -1,21 +1,50 @@
+using KeyShieldDTO.RequestObjects;
+using KeyShieldDTO.ResponseObjects;
 using Microsoft.AspNetCore.Components;
 
 namespace KeyShieldAppWeb.Components.Pages;
 
-public record EncryptReturn(byte[] CipherData, byte[] IV, byte[] AuthTag);
+public record EncryptReturn(byte[] CipherData, byte[] Iv, byte[] AuthTag);
 
 public partial class AjouterEntree
 {
     [Parameter] public required string Identifiant { get; set; }
 
+
+
     private async Task SaveData()
     {
         // Récupération du hash de toutes les entrées
-        var nom = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataNom"]);
-        var nomUtilisateur = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataNomUtilisateur"]);
-        var motDePasse = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataMotDePasse"]);
-        var commentaire = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataCommentaire"]);
+        EncryptReturn nom = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataNom"]);
+        EncryptReturn nomUtilisateur = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataNomUtilisateur"]);
+        EncryptReturn motDePasse = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataMotDePasse"]);
+        EncryptReturn commentaire = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataCommentaire"]);
+        EncryptReturn dateCreation = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataDateCreation"]);
+        EncryptReturn dateModification = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataDateCreation"]);
 
+        Guid coffreId = Guid.TryParse(Identifiant, out Guid id) ? id : Guid.Empty;
+
+        EntreeCreationDTORequest body = new(
+            coffreId,
+            new DonneeCreationDTORequest(nom.CipherData, nom.Iv, nom.AuthTag),
+            new DonneeCreationDTORequest(nomUtilisateur.CipherData, nomUtilisateur.Iv, nomUtilisateur.AuthTag),
+            new DonneeCreationDTORequest(motDePasse.CipherData, motDePasse.Iv, motDePasse.AuthTag),
+            new DonneeCreationDTORequest(commentaire.CipherData, commentaire.Iv, commentaire.AuthTag),
+            new DonneeCreationDTORequest(dateCreation.CipherData, dateCreation.Iv, dateCreation.AuthTag),
+            new DonneeCreationDTORequest(dateModification.CipherData, dateModification.Iv, dateModification.AuthTag)
+        );
+
+        var response = await DownstreamApi.PostForUserAsync<EntreeCreationDTORequest, BooleanResponse>(
+            "KeyShieldAPI",
+            body,
+            options => options.RelativePath = "/api/entree"
+        );
+
+        if (response is not null && !response.Value)
+        {
+            // Error handling
+            return;
+        }
 
         Navigation.NavigateTo($"/coffre/{Identifiant}");
     }

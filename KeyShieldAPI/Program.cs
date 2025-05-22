@@ -29,6 +29,7 @@ builder.Services.AddScoped<ErrorHandlerMiddleware>();
 // Utilisateur
 builder.Services.AddScoped<UtilisateurService>();
 builder.Services.AddScoped<UtilisateurRepository>();
+
 // Coffre
 builder.Services.AddScoped<CoffreService>(sp =>
     new CoffreService(
@@ -38,6 +39,16 @@ builder.Services.AddScoped<CoffreService>(sp =>
     )
 );
 builder.Services.AddScoped<CoffreRepository>();
+
+// Entree
+builder.Services.AddScoped<EntreeService>(sp =>
+    new EntreeService(
+        sp.GetRequiredService<EntreeRepository>(),
+        sp.GetRequiredService<UtilisateurService>(),
+        sp.GetRequiredService<ICoffreDeblocageMemoryStore>()
+    )
+);
+builder.Services.AddScoped<EntreeRepository>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

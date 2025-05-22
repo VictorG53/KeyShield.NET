@@ -45,7 +45,7 @@ window.deriveKey = async function (salt) {
     const passwordKey = await window.crypto.subtle.importKey(
         "raw",
         encoder.encode(password),
-        {name: "PBKDF2"},
+        { name: "PBKDF2" },
         false,
         ["deriveBits", "deriveKey"]
     );
@@ -59,7 +59,7 @@ window.deriveKey = async function (salt) {
             hash: "SHA-256"
         },
         passwordKey,
-        {name: "AES-GCM", length: 256},
+        { name: "AES-GCM", length: 256 },
         true,
         ["encrypt", "decrypt"]
     );
@@ -82,6 +82,11 @@ window.getInputValue = async function (inputId) {
         alert('Element not found.');
         return;
     }
+
+    if (element.type === "hidden") {
+        return new Date().toISOString();
+    }
+
     return element.value;
 }
 

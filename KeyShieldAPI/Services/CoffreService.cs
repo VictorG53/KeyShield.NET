@@ -46,6 +46,19 @@ public class CoffreService(
         };
     }
 
+    public bool IsCoffreUnlocked(string coffreId)
+    {
+        if (string.IsNullOrWhiteSpace(coffreId))
+            throw new ArgumentException("Coffre ID cannot be null or empty.", nameof(coffreId));
+
+        var coffreIdentifiant = Guid.TryParse(coffreId, out var result)
+            ? result
+            : throw new ArgumentException("Invalid Coffre ID format");
+
+        return coffreDeblocageMemoryStore.IsCoffreUnlocked(coffreIdentifiant, utilisateurService.CurrentAppUserId);
+    }
+
+
     public async Task<byte[]?> CheckPasswordAsync(string coffreId, byte[] passwordHash)
     {
         var coffreIdentifiant = Guid.TryParse(coffreId, out var result)
@@ -60,7 +73,7 @@ public class CoffreService(
         var hashComparison = coffre.MotDePasseHash.SequenceEqual(passwordHash);
         if (!hashComparison) return null;
 
-        coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, coffreIdentifiant);
+        coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, utilisateurService.CurrentAppUserId);
         return coffre.Sel;
     }
 
