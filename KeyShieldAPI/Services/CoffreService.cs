@@ -9,11 +9,19 @@ namespace KeyShieldAPI.Services;
 public class CoffreService(
     CoffreRepository coffreRepository,
     UtilisateurService utilisateurService,
+    LogService logService,
     ICoffreDeblocageMemoryStore coffreDeblocageMemoryStore)
 {
     public async Task<List<CoffreDTOResponse>> GetAllUtilisateurCoffresAsync()
     {
         var coffres = await coffreRepository.GetAllUtilisateurCoffresAsync();
+        
+        var log = new LogDTORequest();
+        log.Identifiant = Guid.NewGuid();
+        log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
+        log.ActionTypeIdentifiant = Guid.Parse("474035b2-ed79-4e35-b63e-8194877953cb");
+        
+        await logService.CreateLogAsync(log);
 
         return coffres.Select(coffre => new CoffreDTOResponse
         {

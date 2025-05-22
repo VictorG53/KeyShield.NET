@@ -1,5 +1,6 @@
 using KeyShieldAPI.Repositories;
 using KeyShieldDB.Models;
+using KeyShieldDTO.RequestObjects;
 using KeyShieldDTO.ResponseObjects;
 
 namespace KeyShieldAPI.Services;
@@ -17,14 +18,10 @@ public class LogService(LogRepository logRepository, UtilisateurService utilisat
         }).ToList();
     }
     
-    public async Task<LogDTOResponse> CreateLogAsync(LogDTOResponse logDto)
+    public async Task<LogDTORequest> CreateLogAsync(LogDTORequest logDto)
     {
+
         var log = await logRepository.CreateLogAsync(logDto);
-        return new LogDTOResponse
-        {
-            Identifiant = log.Identifiant,
-            UtilisateurCreateurIdentifiant = log.UtilisateurCreateurIdentifiant,
-            Message = log.Message
-        };
+        return logDto;
     }
 }

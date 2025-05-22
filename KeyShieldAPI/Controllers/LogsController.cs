@@ -12,9 +12,8 @@ public class LogsController(LogService logService, UtilisateurService utilisateu
 {
     public async Task<List<LogDTOResponse>> GetAllLogs()
     {
-        Console.WriteLine("Je passe par ici");
         var logs = await logService.GetLogsAsync();
-
+        
         return logs;
     }
 }

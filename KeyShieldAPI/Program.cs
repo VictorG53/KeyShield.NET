@@ -43,7 +43,9 @@ builder.Services.AddScoped<CoffreService>(sp =>
     new CoffreService(
         sp.GetRequiredService<CoffreRepository>(),
         sp.GetRequiredService<UtilisateurService>(),
+        sp.GetRequiredService<LogService>(),
         sp.GetRequiredService<ICoffreDeblocageMemoryStore>()
+        
     )
 );
 builder.Services.AddScoped<CoffreRepository>();
