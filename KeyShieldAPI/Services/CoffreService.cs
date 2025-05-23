@@ -21,7 +21,7 @@ public class CoffreService(
         var log = new LogDTORequest();
         log.Identifiant = Guid.NewGuid();
         log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
-        log.ActionTypeIdentifiant = Guid.Parse(ActionType.CREATE);
+        log.ActionTypeIdentifiant = Guid.Parse(ActionType.SHOW);
         log.HoroDatage = DateTime.Now;
         log.Message = "Affichage des coffres";
         await logService.CreateLogAsync(log);
@@ -44,6 +44,8 @@ public class CoffreService(
             MotDePasseHash = request.MotDePasseHash,
             DateCreation = DateTime.Now
         };
+        
+        
 
         await coffreRepository.CreateCoffreAsync(coffre);
 

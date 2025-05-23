@@ -33,7 +33,9 @@ builder.Services.AddScoped<UtilisateurRepository>();
 // Log
 builder.Services.AddScoped<LogService>(sp => 
     new LogService(sp.GetRequiredService<LogRepository>(),
-        sp.GetRequiredService<UtilisateurService>())
+        sp.GetRequiredService<UtilisateurService>(),
+        sp.GetRequiredService<KeyShieldDbContext>()
+        )
 );
 
 builder.Services.AddScoped<LogRepository>();
