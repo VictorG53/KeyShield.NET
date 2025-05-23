@@ -45,7 +45,14 @@ public class CoffreService(
             DateCreation = DateTime.Now
         };
         
-        
+        // Enregistrement des logs
+        var log = new LogDTORequest();
+        log.Identifiant = Guid.NewGuid();
+        log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
+        log.ActionTypeIdentifiant = Guid.Parse(ActionType.CREATE);
+        log.HoroDatage = DateTime.Now;
+        log.Message = "Création d'un coffre";
+        await logService.CreateLogAsync(log);
 
         await coffreRepository.CreateCoffreAsync(coffre);
 
@@ -98,6 +105,15 @@ public class CoffreService(
         if (coffre.UtilisateurIdentifiant != utilisateurService.CurrentAppUserId)
             throw new UnauthorizedAccessException("User does not have permission to delete this coffre");
 
+        // Enregistrement des logs
+        var log = new LogDTORequest();
+        log.Identifiant = Guid.NewGuid();
+        log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
+        log.ActionTypeIdentifiant = Guid.Parse(ActionType.DELETE);
+        log.HoroDatage = DateTime.Now;
+        log.Message = "Suppression d'un coffre";
+        await logService.CreateLogAsync(log);
+        
         return await coffreRepository.DeleteCoffreAsync(coffreIdentifiant);
     }
 }
