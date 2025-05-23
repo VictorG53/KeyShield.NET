@@ -101,9 +101,9 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
             .Select(e => new EntreeDTOResponse(
                 e.Identifiant,
                 e.CoffreIdentifiant,
+                e.MotDePasse.Identifiant,
                 new DonneeDTOResponse(e.Nom.Identifiant, e.Nom.Cypher, e.Nom.IV, e.Nom.Tag),
                 new DonneeDTOResponse(e.NomUtilisateur.Identifiant, e.NomUtilisateur.Cypher, e.NomUtilisateur.IV, e.NomUtilisateur.Tag),
-                new DonneeDTOResponse(e.MotDePasse.Identifiant, e.MotDePasse.Cypher, e.MotDePasse.IV, e.MotDePasse.Tag),
                 new DonneeDTOResponse(e.Commentaire.Identifiant, e.Commentaire.Cypher, e.Commentaire.IV, e.Commentaire.Tag),
                 new DonneeDTOResponse(e.DateCreation.Identifiant, e.DateCreation.Cypher, e.DateCreation.IV, e.DateCreation.Tag),
                 new DonneeDTOResponse(e.DateModification.Identifiant, e.DateModification.Cypher, e.DateModification.IV, e.DateModification.Tag)
@@ -112,4 +112,33 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
 
         return entreeList;
     }
+
+    public async Task<DonneeDTOResponse> GetMotDePasseAsync(Guid donneeIdentifiant)
+    {
+        DonneeDTOResponse? entree = await dbContext.Donnees
+            .Where(e => e.Identifiant == donneeIdentifiant)
+            .Select(e => new DonneeDTOResponse(
+                e.Identifiant,
+                e.Cypher,
+                e.IV,
+                e.Tag
+            ))
+            .FirstOrDefaultAsync();
+
+        return entree ?? throw new KeyNotFoundException($"Entree with ID {donneeIdentifiant} not found.");
+    }
+
+    public async Task<Guid> GetCoffreIdFromDonneeIdAsync(Guid donneeIdentifiant)
+    {
+        Guid coffreGuid = await dbContext.Entrees
+            .Where(e => e.MotDePasseIdentifiant == donneeIdentifiant)
+            .Select(e => e.CoffreIdentifiant)
+            .FirstOrDefaultAsync();
+        if (coffreGuid == Guid.Empty)
+        {
+            throw new KeyNotFoundException($"Coffre with Donnee ID {donneeIdentifiant} not found.");
+        }
+        return coffreGuid;
+    }
+
 }

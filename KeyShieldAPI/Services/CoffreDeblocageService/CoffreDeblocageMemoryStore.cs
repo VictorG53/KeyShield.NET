@@ -35,6 +35,8 @@ public class CoffreDeblocageMemoryStore : ICoffreDeblocageMemoryStore
             e.UnlockedAt > expirationTime
         );
 
+        Console.WriteLine($"Coffre {coffreId} unlocked by {utilisateurId}: {unlockedEvent != null}");
+
         return unlockedEvent != null;
     }
 }

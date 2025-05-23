@@ -117,8 +117,14 @@ window.encrypt = async function (inputId) {
     };
 }
 
+window.coffreDotNetRef = null;
+
+window.setCoffreDotNetRef = function (dotNetRef) {
+    window.coffreDotNetRef = dotNetRef;
+}
+
 window.addDataToTable = function (data) {
-    const { nom, nomUtilisateur, motDePasse, commentaire } = data;
+    const { nom, nomUtilisateur, motDePasseIdentifiant, commentaire } = data;
     const table = document.getElementById('coffreData');
     if (!table) {
         alert('Table not found.');
@@ -132,10 +138,17 @@ window.addDataToTable = function (data) {
     const cellCommentaire = row.insertCell(3);
     cellNom.textContent = nom;
     cellNomUtilisateur.textContent = nomUtilisateur;
-    cellMotDePasse.textContent = motDePasse;
+    cellMotDePasse.textContent = "************";
+    cellMotDePasse.style.cursor = "pointer";
+    cellMotDePasse.setAttribute("id", "motDePasse_" + motDePasseIdentifiant);
+    cellMotDePasse.onclick = function () {
+        if (window.coffreDotNetRef) {
+            window.coffreDotNetRef.invokeMethodAsync('GetPassword', motDePasseIdentifiant);
+        } else {
+            alert('Référence .NET non initialisée.');
+        }
+    };
     cellCommentaire.textContent = commentaire;
-
-
 }
 
 window.decrypt = async function (cipherText, iv, tag) {
@@ -163,16 +176,27 @@ window.decryptAndDisplay = async function (dataArray) {
     for (const data of dataArray) {
         const decryptedNom = await decrypt(data.nom.cypher, data.nom.iv, data.nom.tag);
         const decryptedNomUtilisateur = await decrypt(data.nomUtilisateur.cypher, data.nomUtilisateur.iv, data.nomUtilisateur.tag);
-        const decryptedMotDePasse = await decrypt(data.motDePasse.cypher, data.motDePasse.iv, data.motDePasse.tag);
         const decryptedCommentaire = await decrypt(data.commentaire.cypher, data.commentaire.iv, data.commentaire.tag);
 
         const entree = {
             nom: decryptedNom,
             nomUtilisateur: decryptedNomUtilisateur,
-            motDePasse: decryptedMotDePasse,
+            motDePasseIdentifiant: data.motDePasseIdentifiant,
             commentaire: decryptedCommentaire
         }
 
         window.addDataToTable(entree);
     }
+}
+
+window.getPassword = async function (cryptedPassword) {
+    const decryptedPassword = await decrypt(cryptedPassword.cypher, cryptedPassword.iv, cryptedPassword.tag);
+
+    navigator.clipboard.writeText(decryptedPassword).then(function () {
+        alert('Mot de passe copié dans le presse-papiers.');
+    }, function (err) {
+        console.error('Erreur lors de la copie dans le presse-papiers: ', err);
+    });
+
+    passwordElement.style.cursor = "pointer";
 }

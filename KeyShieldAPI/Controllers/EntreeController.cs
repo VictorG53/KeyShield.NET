@@ -26,6 +26,21 @@ public class EntreeController(EntreeService entreeService) : ControllerBase
         }
     }
 
+    [HttpGet("motDePasse/{motDePasseIdentifiant}")]
+    public async Task<ActionResult<DonneeDTOResponse>> GetMotDePasseAsync(string motDePasseIdentifiant)
+    {
+        try
+        {
+            DonneeDTOResponse result = await entreeService.GetMotDePasseAsync(motDePasseIdentifiant);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex}");
+            return StatusCode(500, $"An error occurred while processing your request: {ex}");
+        }
+    }
+
     [HttpGet("{coffreId}")]
     public async Task<ActionResult<List<EntreeDTOResponse>>> GetEntreesAsync(string coffreId)
     {

@@ -40,4 +40,24 @@ public class EntreeService(EntreeRepository entreeRepository, UtilisateurService
         return await entreeRepository.GetAllCoffreEntreesAsync(coffreIdentifiant);
     }
 
+    public async Task<DonneeDTOResponse> GetMotDePasseAsync(string motDePasseIdentifiant)
+    {
+        if (string.IsNullOrEmpty(motDePasseIdentifiant))
+            throw new ArgumentException("Entree ID cannot be null or empty.", nameof(motDePasseIdentifiant));
+
+        Guid motDePasseIdentifiantGuid = Guid.TryParse(motDePasseIdentifiant, out var result)
+            ? result
+            : throw new ArgumentException("Invalid Entree ID format");
+
+        Guid coffreIdentifiantGuid = await entreeRepository.GetCoffreIdFromDonneeIdAsync(motDePasseIdentifiantGuid);
+
+
+        if (!coffreDeblocageMemoryStore.IsCoffreUnlocked(coffreIdentifiantGuid, utilisateurService.CurrentAppUserId))
+        {
+            throw new UnauthorizedAccessException("Coffre is not unlocked.");
+        }
+
+        return await entreeRepository.GetMotDePasseAsync(motDePasseIdentifiantGuid);
+    }
+
 }

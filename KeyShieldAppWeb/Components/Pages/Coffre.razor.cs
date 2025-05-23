@@ -10,6 +10,8 @@ public partial class Coffre : ComponentBase
 
     public byte[]? Sel { get; set; }
 
+    private DotNetObjectReference<Coffre>? dotNetRef;
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -22,10 +24,8 @@ public partial class Coffre : ComponentBase
 
             if (accessResult is not null)
             {
-                Console.WriteLine($"Access result is not null");
                 if (accessResult.Value)
                 {
-                    Console.WriteLine($"Access result: {accessResult.Value}");
                     List<EntreeDTOResponse>? entreeList = await DownstreamApi.GetForUserAsync<List<EntreeDTOResponse>>(
                         "KeyShieldAPI",
                         options => { options.RelativePath = $"api/entree/{Identifiant}"; }
@@ -41,8 +41,27 @@ public partial class Coffre : ComponentBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error accessing coffre");
+            Console.WriteLine($"Error accessing coffre: {ex}");
             Navigation.NavigateTo($"/coffre/{Identifiant}/access");
         }
+
+        dotNetRef = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("setCoffreDotNetRef", dotNetRef);
+    }
+
+    [JSInvokable]
+    public async Task GetPassword(string entreeId)
+    {
+        Console.WriteLine($"Getting password for entreeId: {entreeId}");
+        DonneeDTOResponse? entree = await DownstreamApi.GetForUserAsync<DonneeDTOResponse>(
+            "KeyShieldAPI",
+            options => { options.RelativePath = $"api/entree/motDePasse/{entreeId}"; }
+        );
+        await JS.InvokeVoidAsync("getPassword", [entree]);
+    }
+
+    public void Dispose()
+    {
+        dotNetRef?.Dispose();
     }
 }
