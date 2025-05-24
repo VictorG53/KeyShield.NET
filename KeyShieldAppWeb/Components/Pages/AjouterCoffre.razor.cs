@@ -8,6 +8,11 @@ namespace KeyShieldAppWeb.Components.Pages;
 public partial class AjouterCoffre : ComponentBase
 {
     private string CoffreNom { get; set; } = string.Empty;
+    
+    private string MotDePasse { get; set; } = string.Empty;
+    
+    private bool InclureMajuscules { get; set; } = true;
+    private bool InclureSpeciaux { get; set; } = true;
 
     private async Task SubmitForm()
     {
@@ -58,5 +63,16 @@ public partial class AjouterCoffre : ComponentBase
             Console.WriteLine($"Error creating coffre: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
+    }
+
+    private async Task GenererMotDePasse()
+    {
+        MotDePasse = await JS.InvokeAsync<string>(
+            "generateRandomPassword", 
+            16, 
+            InclureMajuscules, 
+            InclureSpeciaux
+        );
+        StateHasChanged();
     }
 }

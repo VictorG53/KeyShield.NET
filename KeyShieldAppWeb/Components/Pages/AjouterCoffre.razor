@@ -3,6 +3,7 @@
 @inject IDownstreamApi DownstreamApi;
 @inject NavigationManager NavigationManager;
 @inject IJSRuntime JS
+@using KeyShieldAppWeb.Components.Components
 
 <PageTitle>
     Ajouter un coffre
@@ -20,8 +21,17 @@
         </div>
         <div class="mb-3">
             <label for="coffrePassword" class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" id="coffrePassword" required>
+            <input type="password" class="form-control" id="coffrePassword" required @bind="MotDePasse">
         </div>
         <button type="button" class="btn btn-primary" @onclick="SubmitForm">Ajouter</button>
     </form>
+    <div class="mb-3">
+        <label for="coffrePassword" class="form-label">Générer un mot de passe aléatoire :</label>
+        <PasswordGenerator Password="@MotDePasse"
+                           PasswordChanged="@((string v) => MotDePasse = v)"
+                           InclureMajuscules="@InclureMajuscules"
+                           InclureMajusculesChanged="@((bool v) => InclureMajuscules = v)"
+                           InclureSpeciaux="@InclureSpeciaux"
+                           InclureSpeciauxChanged="@((bool v) => InclureSpeciaux = v)" />
+    </div>
 </div>
