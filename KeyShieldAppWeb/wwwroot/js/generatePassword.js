@@ -8,6 +8,8 @@ function generateRandomPassword(length = 16, useUpper = true, useSpecial = true)
     for (let i = 0; i < length; ++i) {
         password += charset.charAt(randomValues[i] % charset.length);
     }
+
+    document.getElementById('generatedPassword').value = password;
     return password;
 }
 
