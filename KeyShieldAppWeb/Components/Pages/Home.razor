@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using KeyShieldDTO.ResponseObjects;
 @using KeyShieldAppWeb.Components.Components
 @attribute [Authorize]
 @inject IDownstreamApi DownstreamApi;
@@ -8,9 +9,9 @@
 @if (_coffres.Count > 0)
 {
     <div class="coffres-container">
-        @foreach (var coffre in _coffres)
+        @foreach (CoffreDTOResponse coffre in _coffres)
         {
-            <CoffreItem Id="@coffre.Identifiant.ToString()" Name="@coffre.Nom" OnCoffreDeleted="@OnCoffreDeletedAsync"/>
+            <CoffreItem Id="@coffre.Identifiant.ToString()" Name="@coffre.Nom" OnCoffreDeleted="@OnCoffreDeletedAsync" />
         }
     </div>
 }

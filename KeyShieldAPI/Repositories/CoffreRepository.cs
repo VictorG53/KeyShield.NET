@@ -15,31 +15,20 @@ public class CoffreRepository(KeyShieldDbContext dbContext, UtilisateurService u
 
     public async Task<Coffre> GetCoffreByIdAsync(Guid identifiant)
     {
-        var coffre = await dbContext.Coffres.FirstOrDefaultAsync(c => c.Identifiant == identifiant) ??
+        Coffre coffre = await dbContext.Coffres.FirstOrDefaultAsync(c => c.Identifiant == identifiant) ??
                      throw new KeyNotFoundException($"Coffre with identifiant {identifiant} not found.");
         return coffre;
     }
 
     public async Task CreateCoffreAsync(Coffre coffre)
     {
-        try
-        {
-            // Vérifiez ici que toutes les propriétés requises de 'coffre' sont bien renseignées
-            Console.WriteLine($"UtilisateurIdentifiant: {coffre.UtilisateurIdentifiant}");
-
-            await dbContext.Coffres.AddAsync(coffre);
-            await dbContext.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            if (ex.InnerException != null) Console.WriteLine("InnerException: " + ex.InnerException.Message);
-        }
+        await dbContext.Coffres.AddAsync(coffre);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<bool> DeleteCoffreAsync(Guid identifiant)
     {
-        var coffre = await dbContext.Coffres.FirstOrDefaultAsync(c => c.Identifiant == identifiant);
+        Coffre? coffre = await dbContext.Coffres.FirstOrDefaultAsync(c => c.Identifiant == identifiant);
         if (coffre == null) return false;
         coffre.DateSuppression = DateTime.UtcNow;
         dbContext.Coffres.Update(coffre);

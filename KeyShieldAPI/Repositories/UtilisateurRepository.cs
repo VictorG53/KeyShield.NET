@@ -6,10 +6,9 @@ namespace KeyShieldAPI.Repositories;
 
 public class UtilisateurRepository(KeyShieldDbContext dbContext)
 {
-
     public async Task<Guid> GetOrCreateUtilisateurAsync(string entraId)
     {
-        var utilisateur = await dbContext.Utilisateurs.FirstOrDefaultAsync(u => u.EntraId == entraId);
+        Utilisateur? utilisateur = await dbContext.Utilisateurs.FirstOrDefaultAsync(u => u.EntraId == entraId);
         if (utilisateur == null)
         {
             utilisateur = new Utilisateur

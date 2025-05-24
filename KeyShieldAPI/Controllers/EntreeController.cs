@@ -19,10 +19,22 @@ public class EntreeController(EntreeService entreeService) : ControllerBase
             await entreeService.CreateEntreeAsync(request);
             return Ok(new BooleanResponse(true));
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex}");
-            return StatusCode(500, $"An error occurred while processing your request: {ex}");
+            return StatusCode(500, $"An error occurred while processing your request : {ex.Message}");
         }
     }
 
@@ -34,10 +46,22 @@ public class EntreeController(EntreeService entreeService) : ControllerBase
             DonneeDTOResponse result = await entreeService.GetMotDePasseAsync(motDePasseIdentifiant);
             return Ok(result);
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex}");
-            return StatusCode(500, $"An error occurred while processing your request: {ex}");
+            return StatusCode(500, $"An error occurred while processing your request : {ex.Message}");
         }
     }
 
@@ -49,10 +73,22 @@ public class EntreeController(EntreeService entreeService) : ControllerBase
             List<EntreeDTOResponse> result = await entreeService.GetAllCoffreEntreesAsync(coffreId);
             return Ok(result);
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex}");
-            return StatusCode(500, $"An error occurred while processing your request: {ex}");
+            return StatusCode(500, $"An error occurred while processing your request : {ex.Message}");
         }
     }
 

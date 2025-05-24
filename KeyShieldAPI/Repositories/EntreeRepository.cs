@@ -11,7 +11,6 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
 
     public async Task CreateEntreeAsync(EntreeCreationDTORequest request)
     {
-
         using var transaction = await dbContext.Database.BeginTransactionAsync();
 
         try
@@ -84,7 +83,6 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
             dbContext.Entrees.Add(entree);
 
             await dbContext.SaveChangesAsync();
-
             await transaction.CommitAsync();
         }
         catch
@@ -96,7 +94,7 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
 
     public async Task<List<EntreeDTOResponse>> GetAllCoffreEntreesAsync(Guid coffreIdentifiant)
     {
-        var entreeList = await dbContext.Entrees
+        List<EntreeDTOResponse> entreeList = await dbContext.Entrees
             .Where(e => e.CoffreIdentifiant == coffreIdentifiant)
             .Select(e => new EntreeDTOResponse(
                 e.Identifiant,
@@ -134,11 +132,12 @@ public class EntreeRepository(KeyShieldDbContext dbContext)
             .Where(e => e.MotDePasseIdentifiant == donneeIdentifiant)
             .Select(e => e.CoffreIdentifiant)
             .FirstOrDefaultAsync();
+
         if (coffreGuid == Guid.Empty)
         {
             throw new KeyNotFoundException($"Coffre with Donnee ID {donneeIdentifiant} not found.");
         }
+
         return coffreGuid;
     }
-
 }

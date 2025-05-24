@@ -9,7 +9,7 @@ public partial class Home : ComponentBase
 
     private async Task FetchCoffre()
     {
-        var coffres = await DownstreamApi.CallApiForUserAsync<List<CoffreDTOResponse>>("KeyShieldAPI", options =>
+        List<CoffreDTOResponse>? coffres = await DownstreamApi.CallApiForUserAsync<List<CoffreDTOResponse>>("KeyShieldAPI", options =>
         {
             options.HttpMethod = "GET";
             options.RelativePath = "api/coffre";

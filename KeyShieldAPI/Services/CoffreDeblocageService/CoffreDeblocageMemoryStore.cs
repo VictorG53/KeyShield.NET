@@ -5,7 +5,7 @@ public class CoffreDeblocageMemoryStore : ICoffreDeblocageMemoryStore
 
     private readonly int minutesToExpire = 15;
 
-    private readonly List<CoffreDeblocage> _events = new();
+    private readonly List<CoffreDeblocage> _events = [];
 
     public IEnumerable<CoffreDeblocage> GetAll()
     {
@@ -25,17 +25,14 @@ public class CoffreDeblocageMemoryStore : ICoffreDeblocageMemoryStore
 
     public bool IsCoffreUnlocked(Guid coffreId, Guid utilisateurId)
     {
-        // Nettoyage des événements expirés
-        var expirationTime = DateTime.UtcNow.AddMinutes(-minutesToExpire);
+        DateTime expirationTime = DateTime.UtcNow.AddMinutes(-minutesToExpire);
         _events.RemoveAll(e => e.UnlockedAt < expirationTime);
 
-        var unlockedEvent = _events.FirstOrDefault(e =>
+        CoffreDeblocage? unlockedEvent = _events.FirstOrDefault(e =>
             e.CoffreIdentifiant.Equals(coffreId) &&
             e.UtilisateurIdentifiant.Equals(utilisateurId) &&
             e.UnlockedAt > expirationTime
         );
-
-        Console.WriteLine($"Coffre {coffreId} unlocked by {utilisateurId}: {unlockedEvent != null}");
 
         return unlockedEvent != null;
     }

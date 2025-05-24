@@ -13,7 +13,7 @@ public class CoffreService(
 {
     public async Task<List<CoffreDTOResponse>> GetAllUtilisateurCoffresAsync()
     {
-        var coffres = await coffreRepository.GetAllUtilisateurCoffresAsync();
+        List<Coffre> coffres = await coffreRepository.GetAllUtilisateurCoffresAsync();
 
         return coffres.Select(coffre => new CoffreDTOResponse
         {
@@ -48,7 +48,7 @@ public class CoffreService(
         if (string.IsNullOrWhiteSpace(coffreId))
             throw new ArgumentException("Coffre ID cannot be null or empty.", nameof(coffreId));
 
-        var coffreIdentifiant = Guid.TryParse(coffreId, out var result)
+        Guid coffreIdentifiant = Guid.TryParse(coffreId, out Guid result)
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 
@@ -58,7 +58,7 @@ public class CoffreService(
 
     public async Task<byte[]?> CheckPasswordAsync(string coffreId, byte[] passwordHash)
     {
-        Guid coffreIdentifiant = Guid.TryParse(coffreId, out var result)
+        Guid coffreIdentifiant = Guid.TryParse(coffreId, out Guid result)
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 
@@ -67,7 +67,7 @@ public class CoffreService(
         if (coffre.UtilisateurIdentifiant != utilisateurService.CurrentAppUserId)
             throw new UnauthorizedAccessException("User does not have access to this coffre");
 
-        var hashComparison = coffre.MotDePasseHash.SequenceEqual(passwordHash);
+        bool hashComparison = coffre.MotDePasseHash.SequenceEqual(passwordHash);
         if (!hashComparison) return null;
 
         coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, utilisateurService.CurrentAppUserId);
@@ -76,7 +76,7 @@ public class CoffreService(
 
     public async Task<bool> DeleteCoffreAsync(string coffreId)
     {
-        Guid coffreIdentifiant = Guid.TryParse(coffreId, out var result)
+        Guid coffreIdentifiant = Guid.TryParse(coffreId, out Guid result)
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 

@@ -6,7 +6,7 @@ using KeyShieldDB.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpLogging(o => { });
 
@@ -53,7 +53,7 @@ builder.Services.AddScoped<EntreeRepository>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseHttpLogging();
 
@@ -72,9 +72,9 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<KeyShieldDbContext>();
+    KeyShieldDbContext dbContext = scope.ServiceProvider.GetRequiredService<KeyShieldDbContext>();
     dbContext.Database.EnsureCreated();
 }
 

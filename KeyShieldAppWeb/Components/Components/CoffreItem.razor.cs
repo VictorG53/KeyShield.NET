@@ -20,13 +20,13 @@ public partial class CoffreItem : ComponentBase
     {
         try
         {
-            var response = await DownstreamApi.DeleteForUserAsync<BooleanResponse, object>(
+            BooleanResponse? response = await DownstreamApi.DeleteForUserAsync<object, BooleanResponse>(
                 "KeyShieldAPI",
-                null,
+                new object(),
                 options => { options.RelativePath = $"api/coffre/{Id}"; }
             );
 
-            if (response != null) await OnCoffreDeleted.InvokeAsync();
+            if (response != null && response.Value == true) await OnCoffreDeleted.InvokeAsync();
         }
         catch (Exception ex)
         {

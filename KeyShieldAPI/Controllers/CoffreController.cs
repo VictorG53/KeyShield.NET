@@ -12,16 +12,17 @@ namespace KeyShieldAPI.Controllers;
 public class CoffreController(CoffreService coffreService)
     : ControllerBase
 {
+    [HttpGet]
     public async Task<List<CoffreDTOResponse>> GetAllCoffresAsync()
     {
-        var coffres = await coffreService.GetAllUtilisateurCoffresAsync();
+        List<CoffreDTOResponse> coffres = await coffreService.GetAllUtilisateurCoffresAsync();
         return coffres;
     }
 
     [HttpPost]
     public async Task<ActionResult<CoffreDTOResponse>> CreateCoffre([FromBody] CoffreDTORequest request)
     {
-        var coffre = await coffreService.CreateCoffreAsync(request);
+        CoffreDTOResponse coffre = await coffreService.CreateCoffreAsync(request);
         return Ok(coffre);
     }
 
@@ -58,7 +59,7 @@ public class CoffreController(CoffreService coffreService)
     {
         try
         {
-            var result = await coffreService.CheckPasswordAsync(coffreId, request.PasswordHash);
+            byte[]? result = await coffreService.CheckPasswordAsync(coffreId, request.PasswordHash);
 
             return Ok(result);
         }
@@ -86,7 +87,7 @@ public class CoffreController(CoffreService coffreService)
     {
         try
         {
-            var result = await coffreService.DeleteCoffreAsync(coffreId);
+            bool result = await coffreService.DeleteCoffreAsync(coffreId);
             return Ok(new BooleanResponse(result));
         }
         catch (ArgumentException ex)

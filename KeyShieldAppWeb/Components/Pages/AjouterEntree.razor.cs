@@ -14,7 +14,7 @@ public partial class AjouterEntree
     {
         try
         {
-            var accessResult = await DownstreamApi.GetForUserAsync<BooleanResponse>(
+            BooleanResponse? accessResult = await DownstreamApi.GetForUserAsync<BooleanResponse>(
                 "KeyShieldAPI",
                 options => { options.RelativePath = $"api/coffre/{Identifiant}/access"; }
             );
@@ -34,12 +34,12 @@ public partial class AjouterEntree
     private async Task SaveData()
     {
         // Récupération du hash de toutes les entrées
-        EncryptReturn nom = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataNom"]);
-        EncryptReturn nomUtilisateur = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataNomUtilisateur"]);
-        EncryptReturn motDePasse = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataMotDePasse"]);
-        EncryptReturn commentaire = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataCommentaire"]);
-        EncryptReturn dateCreation = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataDateCreation"]);
-        EncryptReturn dateModification = await JS.InvokeAsync<EncryptReturn>("encrypt", ["dataDateCreation"]);
+        EncryptReturn nom = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataNom"]);
+        EncryptReturn nomUtilisateur = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataNomUtilisateur"]);
+        EncryptReturn motDePasse = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataMotDePasse"]);
+        EncryptReturn commentaire = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataCommentaire"]);
+        EncryptReturn dateCreation = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataDateCreation"]);
+        EncryptReturn dateModification = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataDateCreation"]);
 
         Guid coffreId = Guid.TryParse(Identifiant, out Guid id) ? id : Guid.Empty;
 
@@ -53,19 +53,17 @@ public partial class AjouterEntree
             new DonneeCreationDTORequest(dateModification.CipherData, dateModification.Iv, dateModification.AuthTag)
         );
 
-        var response = await DownstreamApi.PostForUserAsync<EntreeCreationDTORequest, BooleanResponse>(
+        BooleanResponse? response = await DownstreamApi.PostForUserAsync<EntreeCreationDTORequest, BooleanResponse>(
             "KeyShieldAPI",
             body,
             options => options.RelativePath = "/api/entree"
         );
 
-        if (response is not null && !response.Value)
+        if (response is not null && response.Value)
         {
-            // Error handling
-            return;
+            Navigation.NavigateTo($"/coffre/{Identifiant}");
         }
 
-        Navigation.NavigateTo($"/coffre/{Identifiant}");
     }
 
     private void GoBack()

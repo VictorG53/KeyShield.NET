@@ -29,10 +29,9 @@ window.getAndHashPassword = async function () {
         console.error('Error hashing password:', error);
         return null;
     }
-};
+}
 
 window.deriveKey = async function (salt) {
-
     const passwordElement = document.getElementById('coffrePassword');
     if (!passwordElement || !passwordElement.value) {
         alert('Le mot de passe est obligatoire.');
@@ -90,13 +89,9 @@ window.getInputValue = async function (inputId) {
     return element.value;
 }
 
-window.encrypt = async function (inputId) {
-    let data = await getInputValue(inputId);
+window.encrypt = async function (decryptedData, key, iv) {
     const encoder = new TextEncoder();
-    data = encoder.encode(data);
-
-    const key = await getDerivedKey();
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const data = encoder.encode(decryptedData);
 
     const cipherDataWithAuthTag = await window.crypto.subtle.encrypt(
         {
@@ -112,9 +107,19 @@ window.encrypt = async function (inputId) {
 
     return {
         cipherData: new Uint8Array(cipherData),
-        authTag: new Uint8Array(authTag),
-        iv: iv
+        authTag: new Uint8Array(authTag)
     };
+}
+
+window.encryptInput = async function (inputId) {
+    let data = await getInputValue(inputId);
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const { cipherData, authTag } = window.encrypt(data, await getDerivedKey(), iv);
+    return {
+        cypher: cipherData,
+        iv: iv,
+        tag: authTag
+    }
 }
 
 window.coffreDotNetRef = null;

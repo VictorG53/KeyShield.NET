@@ -13,8 +13,8 @@ public partial class AjouterCoffre : ComponentBase
     {
         try
         {
-            var hashedPassword = await JS.InvokeAsync<byte[]>("getAndHashPassword");
-            var salt = await JS.InvokeAsync<byte[]>("generateSalt");
+            byte[] hashedPassword = await JS.InvokeAsync<byte[]>("getAndHashPassword");
+            byte[] salt = await JS.InvokeAsync<byte[]>("generateSalt");
 
             if (salt.Length == 0)
             {
@@ -34,7 +34,7 @@ public partial class AjouterCoffre : ComponentBase
                 return;
             }
 
-            var response = await DownstreamApi.PostForUserAsync<CoffreDTORequest, CoffreDTOResponse>(
+            CoffreDTOResponse? response = await DownstreamApi.PostForUserAsync<CoffreDTORequest, CoffreDTOResponse>(
                 "KeyShieldAPI",
                 new CoffreDTORequest(
                     CoffreNom,

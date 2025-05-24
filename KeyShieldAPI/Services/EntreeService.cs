@@ -24,7 +24,7 @@ public class EntreeService(EntreeRepository entreeRepository, UtilisateurService
 
     public async Task<List<EntreeDTOResponse>> GetAllCoffreEntreesAsync(string identifiant)
     {
-        Guid coffreIdentifiant = Guid.TryParse(identifiant, out var result)
+        Guid coffreIdentifiant = Guid.TryParse(identifiant, out Guid result)
             ? result
             : throw new ArgumentException("Invalid Coffre ID format");
 
@@ -45,7 +45,7 @@ public class EntreeService(EntreeRepository entreeRepository, UtilisateurService
         if (string.IsNullOrEmpty(motDePasseIdentifiant))
             throw new ArgumentException("Entree ID cannot be null or empty.", nameof(motDePasseIdentifiant));
 
-        Guid motDePasseIdentifiantGuid = Guid.TryParse(motDePasseIdentifiant, out var result)
+        Guid motDePasseIdentifiantGuid = Guid.TryParse(motDePasseIdentifiant, out Guid result)
             ? result
             : throw new ArgumentException("Invalid Entree ID format");
 

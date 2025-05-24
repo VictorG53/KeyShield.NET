@@ -15,7 +15,7 @@ public class GetOrCreateUtilisateurMiddleware(UtilisateurService utilisateurServ
             }
             else
             {
-                var objectId = context.User.GetObjectId();
+                string? objectId = context.User.GetObjectId();
                 if (objectId == null)
                 {
                     throw new ArgumentNullException(nameof(objectId), "User object ID cannot be null.");
