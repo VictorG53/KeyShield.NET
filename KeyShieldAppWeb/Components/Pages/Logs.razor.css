@@ -1,0 +1,21 @@
+table.logs {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+}
+table.logs th, table.logs td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+table.logs th {
+    background-color: #4CAF50;
+    color: white;
+    text-align: left;
+}
+table.logs tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+table.logs tr:hover {
+    background-color: #e0f7fa;
+}

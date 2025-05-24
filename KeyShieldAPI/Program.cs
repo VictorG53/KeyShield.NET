@@ -30,11 +30,22 @@ builder.Services.AddScoped<ErrorHandlerMiddleware>();
 builder.Services.AddScoped<UtilisateurService>();
 builder.Services.AddScoped<UtilisateurRepository>();
 
+// Log
+builder.Services.AddScoped<LogService>(sp => 
+    new LogService(sp.GetRequiredService<LogRepository>(),
+        sp.GetRequiredService<UtilisateurService>(),
+        sp.GetRequiredService<KeyShieldDbContext>()
+        )
+);
+
+builder.Services.AddScoped<LogRepository>();
+
 // Coffre
 builder.Services.AddScoped<CoffreService>(sp =>
     new CoffreService(
         sp.GetRequiredService<CoffreRepository>(),
         sp.GetRequiredService<UtilisateurService>(),
+        sp.GetRequiredService<LogService>(),
         sp.GetRequiredService<ICoffreDeblocageMemoryStore>()
     )
 );

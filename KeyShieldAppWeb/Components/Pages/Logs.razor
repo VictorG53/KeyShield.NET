@@ -1,0 +1,34 @@
+@page "/logs"
+@inject IDownstreamApi DownstreamApi;
+
+<PageTitle>
+    Logs de l'application
+</PageTitle>
+
+<h2>Historique de logs :</h2>
+@if (_logs.Count > 0)
+{
+    <table class="logs">
+        <thead>
+        <tr>
+            <th>Identifiant</th>
+            <th>Date</th>
+            <th>Message</th>
+            <th>Action</th>
+            <th>Utilisateur</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach(var log in _logs)
+        {
+            <tr>
+                <td>@log.Identifiant</td>
+                <td>@log.HoroDatage.ToString()</td>
+                <td>@log.Message</td>
+                <td>@log.Action</td>
+                <td>@log.UtilisateurCreateurIdentifiant</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
