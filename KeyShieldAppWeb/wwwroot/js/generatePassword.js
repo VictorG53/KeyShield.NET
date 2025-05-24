@@ -10,3 +10,11 @@ function generateRandomPassword(length = 16, useUpper = true, useSpecial = true)
     }
     return password;
 }
+
+function setPasswordField(password, fieldId) {
+    const field = document.getElementById(fieldId);
+    if (field) {
+        field.value = password;
+        field.dispatchEvent(new Event('input'));
+    }
+}
