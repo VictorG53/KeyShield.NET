@@ -1,11 +1,12 @@
 using KeyShieldAPI.Repositories;
 using KeyShieldAPI.Services.CoffreDeblocageService;
+using KeyShieldDTO.Constants;
 using KeyShieldDTO.RequestObjects;
 using KeyShieldDTO.ResponseObjects;
 
 namespace KeyShieldAPI.Services;
 
-public class EntreeService(EntreeRepository entreeRepository, UtilisateurService utilisateurService, ICoffreDeblocageMemoryStore coffreDeblocageMemoryStore)
+public class EntreeService(EntreeRepository entreeRepository, UtilisateurService utilisateurService, ICoffreDeblocageMemoryStore coffreDeblocageMemoryStore, LogService logService)
 {
 
     public async Task CreateEntreeAsync(EntreeCreationDTORequest request)
@@ -17,6 +18,12 @@ public class EntreeService(EntreeRepository entreeRepository, UtilisateurService
         {
             throw new UnauthorizedAccessException("Coffre is not unlocked.");
         }
+
+        await logService.CreateLogAsync(new LogDTORequest(
+            "Création d'une entrée dans le coffre",
+            utilisateurService.CurrentAppUserId,
+            ActionType.CREATE
+        ));
 
         await entreeRepository.CreateEntreeAsync(request);
 
@@ -36,6 +43,12 @@ public class EntreeService(EntreeRepository entreeRepository, UtilisateurService
             throw new UnauthorizedAccessException("Coffre is not unlocked.");
         }
 
+        // Enregistrement des logs
+        await logService.CreateLogAsync(new LogDTORequest(
+            "Affichage de toutes les entrées du coffre",
+            utilisateurService.CurrentAppUserId,
+            ActionType.READ
+        ));
 
         return await entreeRepository.GetAllCoffreEntreesAsync(coffreIdentifiant);
     }
@@ -56,6 +69,13 @@ public class EntreeService(EntreeRepository entreeRepository, UtilisateurService
         {
             throw new UnauthorizedAccessException("Coffre is not unlocked.");
         }
+
+        // Enregistrement des logs
+        await logService.CreateLogAsync(new LogDTORequest(
+            "Affichage du mot de passe d'une entrée",
+            utilisateurService.CurrentAppUserId,
+            ActionType.READ
+        ));
 
         return await entreeRepository.GetMotDePasseAsync(motDePasseIdentifiantGuid);
     }

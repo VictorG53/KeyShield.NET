@@ -7,8 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace KeyShieldAPI.Services;
 
 public class LogService(
-    LogRepository logRepository, 
-    UtilisateurService utilisateurService,
+    LogRepository logRepository,
     KeyShieldDbContext dbContext
 )
 {
@@ -19,8 +18,8 @@ public class LogService(
 
         return logs.Select(log =>
         {
-            var actionTypeLabel = actionTypes
-                .FirstOrDefault(a => a.Identifiant == log.ActionTypeIdentifiant).Libelle ?? string.Empty;
+            var actionTypeLabel = actionTypes?
+                .FirstOrDefault(a => a.Identifiant == log.ActionTypeIdentifiant)?.Libelle ?? string.Empty;
 
             return new LogDTOResponse
             {
@@ -33,10 +32,10 @@ public class LogService(
         }).ToList();
 
     }
-    
+
     public async Task<LogDTORequest> CreateLogAsync(LogDTORequest logDto)
     {
-        
+
         var log = await logRepository.CreateLogAsync(logDto);
         return logDto;
     }

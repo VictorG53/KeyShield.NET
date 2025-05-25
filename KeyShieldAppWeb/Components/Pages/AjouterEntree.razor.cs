@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace KeyShieldAppWeb.Components.Pages;
 
-public record EncryptReturn(byte[] CipherData, byte[] Iv, byte[] AuthTag);
+public record EncryptReturn(byte[] Cipher, byte[] Iv, byte[] AuthTag);
 
 public partial class AjouterEntree
 {
@@ -33,35 +33,45 @@ public partial class AjouterEntree
 
     private async Task SaveData()
     {
-        // Récupération du hash de toutes les entrées
-        EncryptReturn nom = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataNom"]);
-        EncryptReturn nomUtilisateur = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataNomUtilisateur"]);
-        EncryptReturn motDePasse = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataMotDePasse"]);
-        EncryptReturn commentaire = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataCommentaire"]);
-        EncryptReturn dateCreation = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataDateCreation"]);
-        EncryptReturn dateModification = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataDateCreation"]);
-
-        Guid coffreId = Guid.TryParse(Identifiant, out Guid id) ? id : Guid.Empty;
-
-        EntreeCreationDTORequest body = new(
-            coffreId,
-            new DonneeCreationDTORequest(nom.CipherData, nom.Iv, nom.AuthTag),
-            new DonneeCreationDTORequest(nomUtilisateur.CipherData, nomUtilisateur.Iv, nomUtilisateur.AuthTag),
-            new DonneeCreationDTORequest(motDePasse.CipherData, motDePasse.Iv, motDePasse.AuthTag),
-            new DonneeCreationDTORequest(commentaire.CipherData, commentaire.Iv, commentaire.AuthTag),
-            new DonneeCreationDTORequest(dateCreation.CipherData, dateCreation.Iv, dateCreation.AuthTag),
-            new DonneeCreationDTORequest(dateModification.CipherData, dateModification.Iv, dateModification.AuthTag)
-        );
-
-        BooleanResponse? response = await DownstreamApi.PostForUserAsync<EntreeCreationDTORequest, BooleanResponse>(
-            "KeyShieldAPI",
-            body,
-            options => options.RelativePath = "/api/entree"
-        );
-
-        if (response is not null && response.Value)
+        try
         {
-            Navigation.NavigateTo($"/coffre/{Identifiant}");
+
+            // Récupération du hash de toutes les entrées
+            EncryptReturn nom = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataNom"]);
+            EncryptReturn nomUtilisateur = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataNomUtilisateur"]);
+            EncryptReturn motDePasse = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataMotDePasse"]);
+            EncryptReturn commentaire = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataCommentaire"]);
+            EncryptReturn dateCreation = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataDateCreation"]);
+            EncryptReturn dateModification = await JS.InvokeAsync<EncryptReturn>("encryptInput", ["dataDateCreation"]);
+
+            Guid coffreId = Guid.TryParse(Identifiant, out Guid id) ? id : Guid.Empty;
+
+            EntreeCreationDTORequest body = new(
+                coffreId,
+                new DonneeCreationDTORequest(nom.Cipher, nom.Iv, nom.AuthTag),
+                new DonneeCreationDTORequest(nomUtilisateur.Cipher, nomUtilisateur.Iv, nomUtilisateur.AuthTag),
+                new DonneeCreationDTORequest(motDePasse.Cipher, motDePasse.Iv, motDePasse.AuthTag),
+                new DonneeCreationDTORequest(commentaire.Cipher, commentaire.Iv, commentaire.AuthTag),
+                new DonneeCreationDTORequest(dateCreation.Cipher, dateCreation.Iv, dateCreation.AuthTag),
+                new DonneeCreationDTORequest(dateModification.Cipher, dateModification.Iv, dateModification.AuthTag)
+            );
+
+            BooleanResponse? response = await DownstreamApi.PostForUserAsync<EntreeCreationDTORequest, BooleanResponse>(
+                "KeyShieldAPI",
+                body,
+                options => options.RelativePath = "/api/entree"
+            );
+            Console.WriteLine($"Response: {response}");
+
+            if (response is not null && response.Value)
+            {
+                Navigation.NavigateTo($"/coffre/{Identifiant}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during the sending of the request : {ex}");
+            return;
         }
 
     }

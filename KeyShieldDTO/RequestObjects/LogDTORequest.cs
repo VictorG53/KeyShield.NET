@@ -1,14 +1,14 @@
 namespace KeyShieldDTO.RequestObjects;
 
-public class LogDTORequest
+public class LogDTORequest(string message, Guid utilisateurCreateurIdentifiant, Guid actionTypeIdentifiant)
 {
-    public Guid Identifiant { get; set; }
-    
-    public DateTime HoroDatage { get; set; }
+    public Guid Identifiant { get; set; } = new Guid();
 
-    public string Message { get; set; } = null!;
-    
-    public Guid UtilisateurCreateurIdentifiant { get; set; }
-    
-    public Guid ActionTypeIdentifiant { get; set; }
+    public DateTime HoroDatage { get; set; } = DateTime.Now;
+
+    public string Message { get; set; } = message;
+
+    public Guid UtilisateurCreateurIdentifiant { get; set; } = utilisateurCreateurIdentifiant;
+
+    public Guid ActionTypeIdentifiant { get; set; } = actionTypeIdentifiant;
 }

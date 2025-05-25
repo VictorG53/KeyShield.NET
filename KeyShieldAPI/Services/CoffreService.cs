@@ -3,7 +3,7 @@ using KeyShieldAPI.Services.CoffreDeblocageService;
 using KeyShieldDB.Models;
 using KeyShieldDTO.RequestObjects;
 using KeyShieldDTO.ResponseObjects;
-using ActionType = KeyShieldDTO.Const.ActionType;
+using ActionType = KeyShieldDTO.Constants.ActionType;
 
 namespace KeyShieldAPI.Services;
 
@@ -16,16 +16,14 @@ public class CoffreService(
     public async Task<List<CoffreDTOResponse>> GetAllUtilisateurCoffresAsync()
     {
         List<Coffre> coffres = await coffreRepository.GetAllUtilisateurCoffresAsync();
-        
+
         // Enregistrement des logs
-        var log = new LogDTORequest();
-        log.Identifiant = Guid.NewGuid();
-        log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
-        log.ActionTypeIdentifiant = Guid.Parse(ActionType.SHOW);
-        log.HoroDatage = DateTime.Now;
-        log.Message = "Affichage des coffres";
-        await logService.CreateLogAsync(log);
-        
+        await logService.CreateLogAsync(new(
+            "Affichage de tous les coffres de l'utilisateur",
+            utilisateurService.CurrentAppUserId,
+            ActionType.READ
+        ));
+
         return coffres.Select(coffre => new CoffreDTOResponse
         {
             Identifiant = coffre.Identifiant,
@@ -44,15 +42,13 @@ public class CoffreService(
             MotDePasseHash = request.MotDePasseHash,
             DateCreation = DateTime.Now
         };
-        
+
         // Enregistrement des logs
-        var log = new LogDTORequest();
-        log.Identifiant = Guid.NewGuid();
-        log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
-        log.ActionTypeIdentifiant = Guid.Parse(ActionType.CREATE);
-        log.HoroDatage = DateTime.Now;
-        log.Message = "Création d'un coffre";
-        await logService.CreateLogAsync(log);
+        await logService.CreateLogAsync(new(
+            "Création d'un coffre",
+            utilisateurService.CurrentAppUserId,
+            ActionType.CREATE
+        ));
 
         await coffreRepository.CreateCoffreAsync(coffre);
 
@@ -88,7 +84,21 @@ public class CoffreService(
             throw new UnauthorizedAccessException("User does not have access to this coffre");
 
         bool hashComparison = coffre.MotDePasseHash.SequenceEqual(passwordHash);
-        if (!hashComparison) return null;
+        if (!hashComparison)
+        {
+            await logService.CreateLogAsync(new(
+                "Tentative de déblocage de coffre échouée",
+                utilisateurService.CurrentAppUserId,
+                ActionType.READ
+            ));
+            return null;
+        }
+
+        await logService.CreateLogAsync(new(
+            "Tentative de déblocage de coffre réussie",
+            utilisateurService.CurrentAppUserId,
+            ActionType.READ
+        ));
 
         coffreDeblocageMemoryStore.RecordUnlock(coffreIdentifiant, utilisateurService.CurrentAppUserId);
         return coffre.Sel;
@@ -106,14 +116,12 @@ public class CoffreService(
             throw new UnauthorizedAccessException("User does not have permission to delete this coffre");
 
         // Enregistrement des logs
-        var log = new LogDTORequest();
-        log.Identifiant = Guid.NewGuid();
-        log.UtilisateurCreateurIdentifiant = utilisateurService.CurrentAppUserId;
-        log.ActionTypeIdentifiant = Guid.Parse(ActionType.DELETE);
-        log.HoroDatage = DateTime.Now;
-        log.Message = "Suppression d'un coffre";
-        await logService.CreateLogAsync(log);
-        
+        await logService.CreateLogAsync(new(
+            "Suppression d'un coffre",
+            utilisateurService.CurrentAppUserId,
+            ActionType.DELETE
+        ));
+
         return await coffreRepository.DeleteCoffreAsync(coffreIdentifiant);
     }
 }

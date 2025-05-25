@@ -13,7 +13,7 @@ public partial class Logs : ComponentBase
         {
             options.RelativePath = "api/log";
         });
-        _logs = logs ?? [];
+        _logs = (logs ?? []).OrderByDescending(l => l.HoroDatage).ToList();
     }
 
     protected override async Task OnInitializedAsync()

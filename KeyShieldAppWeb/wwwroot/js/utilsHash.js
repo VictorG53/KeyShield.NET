@@ -114,11 +114,11 @@ window.encrypt = async function (decryptedData, key, iv) {
 window.encryptInput = async function (inputId) {
     let data = await getInputValue(inputId);
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
-    const { cipherData, authTag } = window.encrypt(data, await getDerivedKey(), iv);
+    const { cipherData, authTag } = await window.encrypt(data, await getDerivedKey(), iv);
     return {
-        cypher: cipherData,
+        cipher: cipherData,
         iv: iv,
-        tag: authTag
+        authTag: authTag
     }
 }
 
@@ -202,6 +202,4 @@ window.getPassword = async function (cryptedPassword) {
     }, function (err) {
         console.error('Erreur lors de la copie dans le presse-papiers: ', err);
     });
-
-    passwordElement.style.cursor = "pointer";
 }

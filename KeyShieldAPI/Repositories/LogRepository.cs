@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeyShieldAPI.Repositories;
 
-public class LogRepository(KeyShieldDbContext dbContext, UtilisateurService utilisateurService)
+public class LogRepository(KeyShieldDbContext dbContext)
 {
     public async Task CreateLogAsync(Log log)
     {
         await dbContext.Logs.AddAsync(log);
         await dbContext.SaveChangesAsync();
     }
-    
+
     public async Task<List<Log>> GetAllLogsAsync()
     {
         return await dbContext.Logs.ToListAsync();
@@ -24,7 +24,7 @@ public class LogRepository(KeyShieldDbContext dbContext, UtilisateurService util
         // Récupération du type d'action
         var actionType = await dbContext.ActionTypes
             .FirstOrDefaultAsync(a => a.Identifiant == logDto.ActionTypeIdentifiant);
-        
+
         if (actionType == null)
             throw new Exception("Type d'action non trouvée");
 
@@ -34,7 +34,7 @@ public class LogRepository(KeyShieldDbContext dbContext, UtilisateurService util
 
         if (user == null)
             throw new Exception("Utilisateur introuvable");
-        
+
         var log = new Log
         {
             Identifiant = Guid.NewGuid(),
@@ -53,11 +53,11 @@ public class LogRepository(KeyShieldDbContext dbContext, UtilisateurService util
             Entree = null,
             Donnee = null
         };
-        
+
         await dbContext.Logs.AddAsync(log);
         await dbContext.SaveChangesAsync();
-        
+
         return log;
     }
-    
+
 }

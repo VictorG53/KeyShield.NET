@@ -1,5 +1,6 @@
 using KeyShieldDB.Models;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 namespace KeyShieldDB.Context;
 
@@ -16,7 +17,7 @@ public class KeyShieldDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(
-            @"Server=192.168.64.2,1401;Database=keyshield;Trusted_Connection=True;TrustServerCertificate=True;Integrated security=False;User=sa;Password=Not24get");
+            @"Server=localhost,1433;Database=KeyShieldDb;Trusted_Connection=True;TrustServerCertificate=True;Integrated security=False;User=sa;Password=MyP@ssword1234!");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
