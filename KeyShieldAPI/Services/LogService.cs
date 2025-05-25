@@ -34,10 +34,19 @@ public class LogService(
 
     }
 
-    public async Task<LogDTORequest> CreateLogAsync(LogDTORequest logDto)
+    public async Task<LogDTOResponse> CreateLogAsync(LogDTORequest logDto)
     {
 
         Log log = await logRepository.CreateLogAsync(logDto);
-        return logDto;
+
+        return new LogDTOResponse()
+        {
+            Identifiant = log.Identifiant,
+            HoroDatage = log.Horodatage,
+            Message = log.Message,
+            UtilisateurCreateurIdentifiant = log.UtilisateurCreateurIdentifiant,
+            Action = log.ActionType.Libelle ?? string.Empty
+        }
+        ;
     }
 }
