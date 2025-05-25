@@ -28,6 +28,7 @@ public partial class CoffreAcces : ComponentBase
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error checking access to coffre: {ex}");
             PasswordOk = false;
             PasswordChecked = true;
             StateHasChanged();

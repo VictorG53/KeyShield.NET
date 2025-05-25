@@ -8,12 +8,12 @@ namespace KeyShieldAPI.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/log")]
-public class LogsController(LogService logService, UtilisateurService utilisateurService) : ControllerBase
+public class LogsController(LogService logService) : ControllerBase
 {
     public async Task<List<LogDTOResponse>> GetAllLogs()
     {
         List<LogDTOResponse> logs = await logService.GetLogsAsync();
-        
+
         return logs;
     }
 }
