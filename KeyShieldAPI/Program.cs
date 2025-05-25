@@ -30,11 +30,14 @@ builder.Services.AddScoped<ErrorHandlerMiddleware>();
 builder.Services.AddScoped<UtilisateurService>();
 builder.Services.AddScoped<UtilisateurRepository>();
 
+// ActionType
+builder.Services.AddScoped<ActionTypeRepository>();
+
 // Log
 builder.Services.AddScoped<LogService>(sp =>
     new LogService(
             sp.GetRequiredService<LogRepository>(),
-            sp.GetRequiredService<KeyShieldDbContext>()
+            sp.GetRequiredService<ActionTypeRepository>()
         )
 );
 

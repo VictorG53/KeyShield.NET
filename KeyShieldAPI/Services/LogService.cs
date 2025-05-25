@@ -1,21 +1,20 @@
 using KeyShieldAPI.Repositories;
-using KeyShieldDB.Context;
 using KeyShieldDB.Models;
 using KeyShieldDTO.RequestObjects;
 using KeyShieldDTO.ResponseObjects;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace KeyShieldAPI.Services;
 
 public class LogService(
     LogRepository logRepository,
-    KeyShieldDbContext dbContext
+    ActionTypeRepository actionTypeRepository
 )
 {
     public async Task<List<LogDTOResponse>> GetLogsAsync()
     {
         List<Log> logs = await logRepository.GetAllLogsAsync();
-        List<ActionType> actionTypes = await dbContext.ActionTypes.ToListAsync();
+        List<ActionType> actionTypes = await actionTypeRepository.GetListActionType();
 
         return logs.Select(log =>
         {
