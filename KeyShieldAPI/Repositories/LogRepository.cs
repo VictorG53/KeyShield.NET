@@ -22,20 +22,20 @@ public class LogRepository(KeyShieldDbContext dbContext)
     public async Task<Log> CreateLogAsync(LogDTORequest logDto)
     {
         // Récupération du type d'action
-        var actionType = await dbContext.ActionTypes
+        ActionType? actionType = await dbContext.ActionTypes
             .FirstOrDefaultAsync(a => a.Identifiant == logDto.ActionTypeIdentifiant);
 
         if (actionType == null)
             throw new Exception("Type d'action non trouvée");
 
         // Récupération de l'utilisateur
-        var user = await dbContext.Utilisateurs
+        Utilisateur? user = await dbContext.Utilisateurs
             .FirstOrDefaultAsync(u => u.Identifiant == logDto.UtilisateurCreateurIdentifiant);
 
         if (user == null)
             throw new Exception("Utilisateur introuvable");
 
-        var log = new Log
+        Log log = new Log
         {
             Identifiant = Guid.NewGuid(),
             // Horodatage = new DateTime(),

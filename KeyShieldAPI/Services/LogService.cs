@@ -1,5 +1,6 @@
 using KeyShieldAPI.Repositories;
 using KeyShieldDB.Context;
+using KeyShieldDB.Models;
 using KeyShieldDTO.RequestObjects;
 using KeyShieldDTO.ResponseObjects;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,8 @@ public class LogService(
 {
     public async Task<List<LogDTOResponse>> GetLogsAsync()
     {
-        var logs = await logRepository.GetAllLogsAsync();
-        var actionTypes = await dbContext.ActionTypes.ToListAsync();
+        List<Log> logs = await logRepository.GetAllLogsAsync();
+        List<ActionType> actionTypes = await dbContext.ActionTypes.ToListAsync();
 
         return logs.Select(log =>
         {
@@ -36,7 +37,7 @@ public class LogService(
     public async Task<LogDTORequest> CreateLogAsync(LogDTORequest logDto)
     {
 
-        var log = await logRepository.CreateLogAsync(logDto);
+        Log log = await logRepository.CreateLogAsync(logDto);
         return logDto;
     }
 }

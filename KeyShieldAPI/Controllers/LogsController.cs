@@ -12,7 +12,7 @@ public class LogsController(LogService logService, UtilisateurService utilisateu
 {
     public async Task<List<LogDTOResponse>> GetAllLogs()
     {
-        var logs = await logService.GetLogsAsync();
+        List<LogDTOResponse> logs = await logService.GetLogsAsync();
         
         return logs;
     }

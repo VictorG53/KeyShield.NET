@@ -17,7 +17,7 @@ public class KeyShieldDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(
-            @"Server=localhost,1433;Database=KeyShieldDb;Trusted_Connection=True;TrustServerCertificate=True;Integrated security=False;User=sa;Password=MyP@ssword1234!");
+            @"Server=192.168.64.2,1401;Database=keyshield;Trusted_Connection=True;TrustServerCertificate=True;Integrated security=False;User=sa;Password=Not24get");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
