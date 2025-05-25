@@ -21,7 +21,8 @@
         </div>
         <div class="mb-3">
             <label for="coffrePassword" class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" id="coffrePassword" required>
+            <input type="password" class="form-control" id="coffrePassword" oninput="showStrength(event)" required>
+            <small id="passwordStrength" class="form-text text-muted"></small>
         </div>
         <button type="button" class="btn btn-primary" @onclick="SubmitForm">Ajouter</button>
     </form>

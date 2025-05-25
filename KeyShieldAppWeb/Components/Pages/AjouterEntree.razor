@@ -31,7 +31,8 @@
 
                         <div class="mb-3">
                             <label for="dataMotDePasse" class="form-label">Mot de passe</label>
-                            <input type="password" class="form-control" id="dataMotDePasse" rows="3" required />
+                            <input type="password" class="form-control" id="dataMotDePasse" oninput="showStrength(event)" rows="3" required />
+                            <small id="passwordStrength" class="form-text text-muted"></small>
                         </div>
 
                         <div class="mb-3">
