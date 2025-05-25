@@ -8,6 +8,7 @@ public partial class PasswordGenerator : ComponentBase
         [Inject] private IJSRuntime JS { get; set; } = default!;
 
         [Parameter] public string Password { get; set; } = string.Empty;
+        [Parameter] public string TargetInputId { get; set; } = "coffrePassword";
         [Parameter] public EventCallback<string> PasswordChanged { get; set; }
         [Parameter] public bool InclureMajuscules { get; set; } = true;
         [Parameter] public EventCallback<bool> InclureMajusculesChanged { get; set; }

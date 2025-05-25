@@ -9,6 +9,10 @@ public record EncryptReturn(byte[] CipherData, byte[] Iv, byte[] AuthTag);
 public partial class AjouterEntree
 {
     [Parameter] public required string Identifiant { get; set; }
+    
+    private string MotDePasse { get; set; } = string.Empty;
+    private bool InclureMajuscules { get; set; } = true;
+    private bool InclureSpeciaux { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
